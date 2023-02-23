@@ -1,0 +1,154 @@
+---
+title: "Outcomes after Subacromial Balloon Spacer Implantation for Massive and Irreparable Rotator Cuff Tears - A Systematic Review and Meta-Analysis"  
+author: "Kennedy Gachigi"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true # makes the toc visible even if you scroll the doc
+    
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE )
+
+library(rmarkdown)
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(meta)
+library(forestplot)
+
+# ?forest.meta
+# ?metacont
+
+```
+
+# Introduction
+
+How do surgeons know if a new type of surgery is viable or not? 
+
+They can ask their study team to perform a meta-analysis! A method for systematically combining pertinent qualitative and quantitative study data from several selected studies to develop a single conclusion that has greater statistical power. 
+
+one of the latest considerations by OrthoCarolina orthopedic surgeons is the management of massive and irreparable rotator cuff tears (RCTs). Currently, there is no consensus regarding the gold standard treatment, however, an emerging option involves the use of a biodegradable spacer placed in the subacromial space.
+
+The purpose of this study, therefore, was to systematically review and synthesize the current literature reporting on the outcomes and complications of patients undergoing implantation of a subacromial balloon (SAB) spacer for the treatment of massive and irreparable RCTs.
+
+# Methods
+
+A systematic review of the PubMed Central, MEDLINE, Embase, Scopus, and Cochrane Library databases from inception through December 2022 was performed. Clinical outcomes studies reporting on functional and clinical outcomes, as well as postoperative complications, were included. 
+
+ 
+```{r , echo = FALSE} 
+
+# fig.width is in inches
+
+# let's use lapply to get all the PROs from the excel sheet at once
+
+# specifying the path name
+path <- "G:\\Outcomes Research\\Sports Projects\\Saltzman/SPORT178 - Subacromial Balloon Spacer Meta-Analysis\\KennedyGachigi\\Raw\\SPORT178_PROs_20230113.xlsx"
+  
+# getting data from sheets
+sheets <- getSheetNames(path)
+PROs <- lapply(sheets, read.xlsx, xlsxFile=path)
+
+# assigning names to data frame
+names(PROs) <- sheets
+  
+# this function puts every item in the list into a data table 
+list2env(PROs ,envir=.GlobalEnv) 
+
+
+# First make this a function then run the function on every patient reported outcome (PRO)
+
+meta_analysis <-function(outcome) {
+  
+      meta_data <- metacont(postopN, postopMean, postopSD, preopN, preopMean, preopSD, 
+                      studlab = StudyID, random = T, common = F, data = outcome, sm = "MD", 
+                      title = "Score", label.e = "Postoperative", label.c = "Preoperative")
+
+      forest(meta_data, lefcols = c("StudyID"), layout = "RevMan5")
+  
+}
+
+```
+
+# Patient reported outcomes (PROs)
+
+## Constant score
+
+The Constant score is designed to assess shoulder disorders in general by combining subjective and objective measurements such as pain (15 points), activities of daily living (20 points), strength (25 points) and the range of motion (40 points). Total point = 100, the higher the score the better the shoulder functionality.
+
+Ten studies reported a measure of variance in addition to pre- and postoperative scores and were eligible for inclusion in the quantitative synthesis.
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(Constant)
+
+```
+
+
+Meta-analysis revealed a significant improvement in Constant scores with a mean increase of 33.5.
+
+What can we infer about the similarity of these studies?
+
+The high I-squared reveals a very low degree of homogeneity(similar) and consequently a high degree of heterogeneity meaning that there is a lot of variation between the studies. 
+Nevertheless, a surgeon who chooses to perform this surgery should expect an improvement in the constant score of between 25-42. (Confidence interval) 
+
+## American Shoulder and Elbow Surgeons score (ASES)
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(ASES)
+
+```
+
+## Oxford Shoulder score (OSS)
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(OSS)
+
+```
+
+## Visual analog scale for pain (VAS) or Numeric Pain Rating Scale (NPRS) score
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(OSS)
+
+```
+
+## Forward Elevation (degrees)
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(ForwardElevation)
+
+```
+
+## Abduction (degrees)
+
+```{r, fig.width = 11, fig.height = 5, echo = FALSE} 
+meta_analysis(Abduction)
+
+```
+
+
+## External Rotation (degrees)
+
+```{r, fig.width = 11, fig.height = 5,echo = FALSE} 
+meta_analysis(ExternalRotation)
+
+```
+
+# Conclusion
+
+Our study demonstrates that the use of a SAB in the treatment of massive and irreparable RCTs is safe and may be associated with early improvements in postoperative pain and function. Additional studies are needed to refine the indications and surgical approach as well as clarify the potential therapeutic value of SAB implantation relative to other generally accepted treatment strategies.  
+
+
+```{r, fig.width = 6, fig.height = 4, echo = FALSE, fig.align = "center"} 
+
+knitr::include_graphics("C:/Users/kgach/Desktop/Logo.jpg") #let's add an OCRI logo!
+
+```
+
+
+
+
+
